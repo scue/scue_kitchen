@@ -1,4 +1,4 @@
-厨房版本：0.1 beta5
+厨房版本：0.2
 厨房作者：linkscue@gmail.com
 权利声明：本程序开源开放，任何人可以复制修改，并重新发布，但需保留原作者信息；
 项目地址：git@github.com:scue/scue_kitchen.git
