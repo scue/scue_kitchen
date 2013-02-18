@@ -36,8 +36,7 @@ echo " 1) 解压szb文件；"
 echo " 2) 解压img文件；"
 echo " 3) 打包img文件；"
 echo " 4) 打包szb文件；"
-echo " 5) 验证szb文件；"
-echo " 6) 移除system的链接文件(zip卡刷包必选)；"
+echo " 5) 移除system的链接文件(zip卡刷包必选)；"
 echo " b) 返回主菜单；"
 echo ""
 
@@ -137,7 +136,6 @@ case $opt in
     sudo chown -R $USER $tmp
     sudo chmod -R 775 $tmp
     echo "正在拷贝preload分区文件至 $(basename $wd)/$(basename $preload_dir) .."
-    rm -rf ${preload_dir}_bak 2> /dev/null
     mv -f $preload_dir ${preload_dir}_bak 2> /dev/null
     cp -af $tmp $preload_dir
     sudo umount $tmp 2> /dev/null
@@ -153,7 +151,6 @@ case $opt in
     sudo chown -R $USER $tmp
     sudo chmod -R 775 $tmp
     echo "正在拷贝system分区文件至 $(basename $wd)/$(basename $system_dir) .."
-    rm -rf ${system_dir}_bak 2> /dev/null
     mv -f $system_dir ${system_dir}_bak 2> /dev/null
     cp -af $tmp $system_dir
     sudo umount $tmp 2> /dev/null
@@ -256,8 +253,6 @@ case $opt in
     szb_name_repack="${szb_name%.szb}"
     szb_name_output=${szb_name_repack}.szb
     echo -n " -v $szb_name_repack" >> $repack_cmd
-    echo ""
-    echo "正在打包为szb文件，其中打包过程可能会比较长 .."
     cd $wd/szb_repack/
     $(cat $repack_cmd)
     mv $szb_name_repack $szb_name_output
@@ -269,25 +264,7 @@ case $opt in
     read -p "请按任意键返回:"
     $sub_menu_dir/menu_szb.sh $wd
 ;;
-5)  #验证szb的正确性；
-    #错误侦测
-    while [[ "$list_szb" == "" ]]; do
-        echo ""
-        read -p "请把szb文件放置于$(basename $wd)/目录下:"
-    done
-    echo ""
-    echo "请选择您要解压的szb文件："
-    select szb in ${list_szb[@]};do
-        echo ""
-        echo "您选择将要解压szb文件是$(basename $szb)"
-        break;
-    done;
-    $szbtool -i $szb
-    echo ""
-    read -p "请按任意键返回:"
-    $sub_menu_dir/menu_szb.sh $wd
-;;
-6)  #清除链接文件以打包为zip
+5)  #清除链接文件以打包为zip
     #目录列表
     echo ""
     echo "**如果你制作szb刷机包，不需要清理链接文件，这个选项为制作zip卡刷包准备的**"

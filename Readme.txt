@@ -1,11 +1,11 @@
 厨房版本：0.1 beta5
 厨房作者：linkscue@gmail.com
 权利声明：本程序开源开放，任何人可以复制修改，并重新发布，但需保留原作者信息；
+项目地址：git@github.com:scue/scue_kitchen.git
 
 环境要求：
 1. 64位要安装32位运行组件：在终端上输入 "sudo apt-get install ia32-libs"
 2. 自动配置java环境(Linux_java_env.zip)：http://pan.baidu.com/share/link?shareid=322603&uk=1175777033
-   或者使用命令下载(Linux_java_env.zip)：wget -c -O jdk1.6.0_34.zip "http://t.cn/zYaBa4y"
 
 操作说明：
 1. 打开终端程序，使用cd命令打开至此文件夹；
@@ -36,5 +36,4 @@
 
 >> 0.1 beta1
 目录仅支持主菜单的前5个选项的功能；
-
 
