@@ -3,6 +3,11 @@
 #author:linkscue
 #e-mail:linkscue@gmail.com
 
+#self
+oldwd=$(pwd)
+dir_self=$(dirname $0)
+cd $dir_self
+
 #dir
 TOPDIR=$(pwd)
 scripts_dir=$TOPDIR/linkscue-scripts
@@ -193,6 +198,8 @@ case $opt in
      ;;
      x) clear;
         printf "\n拜拜，下次再见! #^_^# \n\n"
+        #切换为之前的工作目录
+        cd $oldwd
         exit 0
         ;;
      *) $TOPDIR/scue_kitchen.sh
