@@ -1,0 +1,11 @@
+ui_print("");
+ui_print("");
+ui_print("RESET PARTITION...");
+show_progress(1.0, 7);
+package_extract_file("repart_huawei.sh", "/tmp/repart_huawei.sh");
+set_perm(0, 0, 0777, "/tmp/repart_huawei.sh");
+run_program("/tmp/repart_huawei.sh");
+show_progress(0.2, 3);
+ui_print("");
+ui_print("UPDATE OK!");
+

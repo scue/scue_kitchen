@@ -1,0 +1,9 @@
+# Add by linkscue start, for /system/etc/init.d/<custom_scripts> autorun supported
+service sysinit /sbin/run-parts /system/etc/init.d/
+
+    disabled
+    oneshot
+
+on property:dev.bootcomplete=1
+    start sysinit
+# Add by linkscue end.
