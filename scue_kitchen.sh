@@ -5,11 +5,14 @@
 
 #self
 oldwd=$(pwd)
-dir_self=$(dirname $0)
+rl_self=$(readlink -f $0)
+dir_self=$(dirname $rl_self)
+echo ""
+echo "scue_kitchen readlink is $dir_self"
 cd $dir_self
 
 #dir
-TOPDIR=$(pwd)
+TOPDIR=$dir_self
 scripts_dir=$TOPDIR/linkscue-scripts
 sub_menu_dir=$scripts_dir/menu_scripts
 zipalign=$TOPDIR/linkscue-scripts/zipalign
