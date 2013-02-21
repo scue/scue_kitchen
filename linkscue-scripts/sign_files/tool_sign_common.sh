@@ -10,9 +10,9 @@ apkname=${apk%.*}
 apksigned="$apkname"_Signed
 zip_true=$(echo $1 | grep zip)
 if [[ $zip_true ]]; then
-    output=$apksigned.zip
+    output=${2:-"$apksigned.zip"}
 else
-    output=$apksigned.apk
+    output=${2:-"$apksigned.apk"}
 fi
 java -jar $jar $pem $pk8 $apk $output
 echo "I: signed file is $output"

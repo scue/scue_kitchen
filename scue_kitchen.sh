@@ -29,7 +29,7 @@ echo "
  4) 清理已移除程序残留的非必需库文件；
  5) 解压华为UPDATE.APP文件；
  6) 自定义华为data空间大小；
- 7) 合并odex与apk程序；
+ 7) 合并odex与分离odex；
  8) 联想特殊szb格式；
  9) 签名工具；
 
@@ -143,21 +143,21 @@ case $opt in
            $sub_menu_dir/menu_repart.sh $work_repart_dir
        fi
        ;;
-     7) work_odex2dex_dir=$topwd/work_odex2dex_`date +"%Y%m%d_%H%M%S"`
-        work_odex2dex_old=$topwd/$(ls -1 | grep work_odex2dex_)
-        work_odex2dex_bak=$topwd/work_odex2dex_bak
-        if [[ $work_odex2dex_old != "$topwd/" ]]; then
-           read -p "发现旧的odex2dex工作目录$(basename $work_odex2dex_old)，是否继续使用它？[Y/n]"
+     7) work_odex_dir=$topwd/work_odex_`date +"%Y%m%d_%H%M%S"`
+        work_odex_old=$topwd/$(ls -1 | grep work_odex_)
+        work_odex_bak=$topwd/work_odex_bak
+        if [[ $work_odex_old != "$topwd/" ]]; then
+           read -p "发现旧的odex工作目录$(basename $work_odex_old)，是否继续使用它？[Y/n]"
            if [[ $REPLY == "n" ]]; then
-               mv $work_odex2dex_old $work_odex2dex_bak
-               mkdir -p $work_odex2dex_dir
-               $sub_menu_dir/menu_odex2dex.sh $work_odex2dex_dir
+               mv $work_odex_old $work_odex_bak
+               mkdir -p $work_odex_dir
+               $sub_menu_dir/menu_odex.sh $work_odex_dir
            else 
-               $sub_menu_dir/menu_odex2dex.sh $work_odex2dex_old
+               $sub_menu_dir/menu_odex.sh $work_odex_old
            fi
        else
-           mkdir -p $work_odex2dex_dir
-           $sub_menu_dir/menu_odex2dex.sh $work_odex2dex_dir
+           mkdir -p $work_odex_dir
+           $sub_menu_dir/menu_odex.sh $work_odex_dir
        fi
        ;;
      8) work_szb_dir=$topwd/work_szb_`date +"%Y%m%d_%H%M%S"`

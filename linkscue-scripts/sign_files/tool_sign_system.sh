@@ -8,6 +8,6 @@ pk8="$dir"/platform.pk8
 apk=$1
 apkname=${apk%.*}
 apksigned="$apkname"_Signed
-output=$apksigned.apk
+output=${2:-"$apksigned.apk"}
 java -jar $jar $pem $pk8 $apk $output
 echo "I: signed file is $output"
