@@ -27,10 +27,10 @@ print colored ("$version", 'bold blue') . "\n";
 die "Usage: $usage" unless $ARGV[0] && $ARGV[1] && $ARGV[2];
 
 if ( $ARGV[0] eq "-boot" ) {
-	die "Usage: $usage" unless $ARGV[3] && !$ARGV[4];
+	die "Usage: $usage" unless $ARGV[4] && !$ARGV[5];
 	repack_boot("ROOTFS");
 } elsif ( $ARGV[0] eq "-recovery" ) {
-	die "Usage: $usage" unless $ARGV[3] && !$ARGV[4];
+	die "Usage: $usage" unless $ARGV[4] && !$ARGV[5];
 	repack_boot("RECOVERY");
 } elsif ( $ARGV[0] eq "-logo" ) {
 	if ( $ARGV[1] eq "--no_compression" ) {
@@ -50,6 +50,7 @@ sub repack_boot {
 	my $kernel = $ARGV[1];
 	my $ramdiskdir = $ARGV[2];
 	my $outfile = $ARGV[3];
+    my $mkbootimg = $ARGV[4];
 	my $signature = $_[0];
 	$ARGV[0] =~ s/-//;
 	
@@ -86,7 +87,7 @@ sub repack_boot {
 		system ("./mkbootimg.exe --kernel $kernel --ramdisk new-ramdisk-repack.cpio.gz -o $outfile");
 	} else {
 	#	system ("mkbootimg --kernel $kernel --ramdisk new-ramdisk-repack.cpio.gz -o $outfile");
-		system ("../linkscue-scripts/bootimg-scripts-common/mkbootimg --kernel $kernel --ramdisk new-ramdisk-repack.cpio.gz -o $outfile");
+		system ("$mkbootimg --kernel $kernel --ramdisk new-ramdisk-repack.cpio.gz -o $outfile");
 	}
 
 	# cleanup

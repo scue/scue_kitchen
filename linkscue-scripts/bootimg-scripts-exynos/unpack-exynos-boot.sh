@@ -3,14 +3,13 @@
 #author:linkscue@gmail.com
 #example:./unpack-exynos-boot.sh recovery.img
 
-if [[ $# == 0 ]]; then
-    echo "usage: `basename $0` \$boot.img"
-    exit 1
-fi
+#self
+script_self=$(readlink -f $0)
+TOPDIR=${script_self%/linkscue-scripts/bootimg-scripts-exynos/unpack-exynos-boot.sh}
 
-mkimage=../linkscue-scripts/bootimg-scripts-exynos/mkimage
-mkbootimg=../linkscue-scripts/bootimg-scripts-common/mkbootimg
-bootimg=../linkscue-scripts/bootimg-scripts-common/bootimg.py
+mkimage=$TOPDIR/linkscue-scripts/bootimg-scripts-exynos/mkimage
+mkbootimg=$TOPDIR/linkscue-scripts/bootimg-scripts-common/mkbootimg
+bootimg=$TOPDIR/linkscue-scripts/bootimg-scripts-common/bootimg.py
 
 img=$1
 tmp=tmp_$$.txt

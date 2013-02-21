@@ -12,9 +12,10 @@ if [[ $# -lt 2 ]]; then
     -a merge all above files"
     exit 1
 fi
-
+#self
+script_self=$(readlink -f $0)
 #dir
-TOPDIR=$(pwd)
+TOPDIR=${script_self%/linkscue-scripts/apktool/mergeapk.sh}
 scripts_dir=$TOPDIR/linkscue-scripts
 sub_menu_dir=$scripts_dir/menu_scripts
 zipalign=$TOPDIR/linkscue-scripts/zipalign

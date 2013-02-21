@@ -1,7 +1,10 @@
 #!/bin/bash
 
+#self
+script_self=$(readlink -f $0)
+
 #dir
-TOPDIR=$(pwd)
+TOPDIR=${script_self%/linkscue-scripts/menu_scripts/menu_cncal.sh}
 scripts_dir=$TOPDIR/linkscue-scripts
 sub_menu_dir=$scripts_dir/menu_scripts
 zipalign=$TOPDIR/linkscue-scripts/zipalign
@@ -33,8 +36,8 @@ if [[ $detect_java == "" ]]; then
 else
     #开始制作农历锁屏
     printf "\nI:正拷贝必需的文件.."
-    mv -f $undo_cncalender_dir/framework.jar $onekey_cncalender_dir/framework.jar
-    mv -f $undo_cncalender_dir/android.policy.jar $onekey_cncalender_dir/android.policy.jar
+    cp -f $undo_cncalender_dir/framework.jar $onekey_cncalender_dir/framework.jar
+    cp -f $undo_cncalender_dir/android.policy.jar $onekey_cncalender_dir/android.policy.jar
     oldpwd=`pwd`
     cd $onekey_cncalender_dir/
     printf "\nI:正在制作农历锁屏.."
@@ -42,8 +45,9 @@ else
     cd $oldpwd
     printf "\nI:制作的农历锁屏已完成，正进行zipalign.."
     mkdir -p $undo_cncalender_dir/jar_new
-    $zipalign -v 4  $onekey_cncalender_dir/jar_new/framework.jar $undo_cncalender_dir/jar_new/framework.jar &> /dev/null
-    $zipalign -v 4  $onekey_cncalender_dir/jar_new/android.policy.jar $undo_cncalender_dir/jar_new/android.policy.jar &> /dev/null
+    #加个f参数，强制覆盖工作目录jar_new目录下现有的文件
+    $zipalign -vf 4  $onekey_cncalender_dir/jar_new/framework.jar $undo_cncalender_dir/jar_new/framework.jar &> /dev/null
+    $zipalign -vf 4  $onekey_cncalender_dir/jar_new/android.policy.jar $undo_cncalender_dir/jar_new/android.policy.jar &> /dev/null
     printf "\nI:所有操作已完成，恭喜! `date +%F` `date +%X`"
 fi
 

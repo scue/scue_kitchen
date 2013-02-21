@@ -1,12 +1,16 @@
 #!/bin/bash
 
+#self
+script_self=$(readlink -f $0)
+
 #dir
-TOPDIR=$(pwd)
+TOPDIR=${script_self%/linkscue-scripts/menu_scripts/menu_repart.sh}
 scripts_dir=$TOPDIR/linkscue-scripts
 sub_menu_dir=$scripts_dir/menu_scripts
 zipalign=$TOPDIR/linkscue-scripts/zipalign
 
 wd=$1
+oldwd=$(pwd)
 sign_tool=$scripts_dir/sign_files/tool_sign_common.sh 
 repart_dir=$scripts_dir/huawei_repart_rom
 
@@ -35,7 +39,7 @@ zip -r1 ../repart_huawei.zip * &> /dev/null
 cd ../
 $sign_tool repart_huawei.zip &> /dev/null
 cp repart_huawei_Signed.zip $wd/$name
-cd $TOPDIR
+cd $oldwd
 echo "I: 自定义data分区${size}g卡刷包已经生成;"
 echo "
 I: 卡刷包位于$(basename $wd)/$name"

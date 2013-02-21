@@ -1,7 +1,8 @@
-if [[ $# -lt 2 ]]; then
-    echo "usage: `basename $0` [kernel] [ramdisk_dir] [out_file]"
-    exit 1
-fi
+#!/bin/bash
+
+#self
+script_self=$(readlink -f $0)
+dir_self=$(dirname $script_self)
 
 kernel=$1
 rd_dir=$2
@@ -11,15 +12,12 @@ base=$(cat $(ls | grep "\-base"))
 cmdline=$(cat $(ls | grep "\-cmdline"))
 page_size=$(cat $(ls | grep "\-page_size"))
 padding_size=$(cat $(ls | grep "\-padding_size"))
-
-dir_self=$(dirname $0)
 mkbootimg=$dir_self/mkbootimg
 
 cd $rd_dir 
 find . | cpio -o -H newc | gzip > ../ramdisk.cpio.gz
 cd ../
 
-#echo `pwd`
 #制作boot.img
 $mkbootimg --kernel $kernel --ramdisk ramdisk.cpio.gz --base $base --cmdline \'$cmdline\' --pagesize $page_size -o $outfile
 echo "I: the output file is $outfile"

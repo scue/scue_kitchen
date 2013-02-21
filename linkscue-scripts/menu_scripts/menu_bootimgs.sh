@@ -1,13 +1,15 @@
 #!/bin/bash
 
-clear
+#self
+script_self=$(readlink -f $0)
 
 #dir
-TOPDIR=$(pwd)
+TOPDIR=${script_self%/linkscue-scripts/menu_scripts/menu_bootimgs.sh}
 scripts_dir=$TOPDIR/linkscue-scripts
 sub_menu_dir=$scripts_dir/menu_scripts
 
 #list the menu
+clear
 echo "
 欢迎使用linkscue bootimg定制厨房工具！"
 
@@ -26,23 +28,24 @@ echo "
 "
 
 #specify work bootimg dir
-boot_dir=$1
+wd=$1
+oldwd=${2:-$(pwd)}
 
 #dir
 bootimg_common_dir=$scripts_dir/bootimg-scripts-common
 bootimg_exynos_dir=$scripts_dir/bootimg-scripts-exynos
 bootimg_mtk_dir=$scripts_dir/bootimg-scripts-mtk
-oldwd=`pwd`
+mkbootimg=$bootimg_common_dir/mkbootimg
 
 #info
-echo "当前工作目录是 $(basename $boot_dir);
+echo "当前工作目录是 $(basename $wd);
 
-请把boot.img放置于 $(basename $boot_dir); 
+请把boot.img放置于 $(basename $wd); 
 
 当前boot.img工作目录信息：
 "
-if [[ -e $boot_dir/bootimg.log ]]; then
-    cat $boot_dir/bootimg.log | while read line;do
+if [[ -e $wd/bootimg.log ]]; then
+    cat $wd/bootimg.log | while read line;do
         case $line in
             "common") echo "a) 通用平台";;
             "MTK") echo "a) MTK平台";;
@@ -62,90 +65,82 @@ fi
 
 #get option
 read -p "请输入选项:" opt
-while [[ ! -f $boot_dir/boot.img ]]; do
-    read -p "请把boot.img放置于$boot_dir!"
+while [[ ! -f $wd/boot.img ]]; do
+    read -p "请把boot.img放置于$wd!"
 done
 case $opt in
-    1) cd $boot_dir
+    1) cd $wd
 	   rm -rf initrd &> /dev/null
        $bootimg_common_dir/unpack-boot-scue.sh
        if [[ $? == 0 ]]; then
-           echo "common" > $boot_dir/bootimg.log
-           echo "unpack is ok!" >> $boot_dir/bootimg.log
+           echo "common" > $wd/bootimg.log
+           echo "unpack is ok!" >> $wd/bootimg.log
        fi
-       cd $oldwd
-       $sub_menu_dir/menu_bootimgs.sh $boot_dir
+       $script_self $wd
        ;;
-    2) cd $boot_dir
+    2) cd $wd
        $bootimg_mtk_dir/unpack-MT65xx.sh boot.img
        if [[ $? == 0 ]]; then
-           echo "MTK" > $boot_dir/bootimg.log
-           echo "unpack is ok!" >> $boot_dir/bootimg.log
+           echo "MTK" > $wd/bootimg.log
+           echo "unpack is ok!" >> $wd/bootimg.log
        fi
-       cd $oldwd
-       $sub_menu_dir/menu_bootimgs.sh $boot_dir
+       $script_self $wd $oldwd
        ;;
-    3) cd $boot_dir
+    3) cd $wd
        $bootimg_exynos_dir/unpack-exynos-boot.sh boot.img
        if [[ $? == 0 ]]; then
-           echo "exynos" > $boot_dir/bootimg.log
-           echo "unpack is ok!" >> $boot_dir/bootimg.log
+           echo "exynos" > $wd/bootimg.log
+           echo "unpack is ok!" >> $wd/bootimg.log
        fi
-       cd $oldwd
-       $sub_menu_dir/menu_bootimgs.sh $boot_dir
+       $script_self $wd $oldwd
        ;;
-    4) cd $boot_dir
+    4) cd $wd
        $bootimg_common_dir/ramdisk_root.sh
        if [[ $? == 0 ]]; then
-           echo "rooted" >> $boot_dir/bootimg.log
+           echo "rooted" >> $wd/bootimg.log
        fi
-       cd $oldwd
-       $sub_menu_dir/menu_bootimgs.sh $boot_dir
+       $script_self $wd
        ;;
-    5) cd $boot_dir
+    5) cd $wd
        $bootimg_common_dir/ramdisk_busybox.sh
        if [[ $? == 0 ]]; then
-           echo "busybox" >> $boot_dir/bootimg.log
+           echo "busybox" >> $wd/bootimg.log
        fi
-       cd $oldwd
-       $sub_menu_dir/menu_bootimgs.sh $boot_dir
+       $script_self $wd $oldwd
        ;;
-    6) cd $boot_dir
+    6) cd $wd
        $bootimg_common_dir/ramdisk_init.d.sh
        if [[ $? == 0 ]]; then
-           echo "init.d" >> $boot_dir/bootimg.log
+           echo "init.d" >> $wd/bootimg.log
        fi
-       cd $oldwd
-       $sub_menu_dir/menu_bootimgs.sh $boot_dir
+       $script_self $wd $oldwd
        ;;
-    7) cd $boot_dir
+    7) cd $wd
        $bootimg_common_dir/repack-boot-scue.sh kernel initrd boot_new.img
         
        if [[ $? == 0 ]]; then
-           echo "repack is ok!" >> $boot_dir/bootimg.log
+           echo "repack is ok!" >> $wd/bootimg.log
        fi
-       cd $oldwd
-       $sub_menu_dir/menu_bootimgs.sh $boot_dir
+       $script_self $wd $oldwd
        ;;
-    8) cd $boot_dir
-       $bootimg_mtk_dir/repack-MT65xx.sh -boot boot.img-kernel.img boot.img-ramdisk boot_new.img
+    8) cd $wd
+       $bootimg_mtk_dir/repack-MT65xx.sh -boot boot.img-kernel.img boot.img-ramdisk boot_new.img $mkbootimg
        if [[ $? == 0 ]]; then
-           echo "repack is ok!" >> $boot_dir/bootimg.log
+           echo "repack is ok!" >> $wd/bootimg.log
        fi
-       cd $oldwd
-       $sub_menu_dir/menu_bootimgs.sh $boot_dir
+       $script_self $wd $oldwd
        ;;
-    9) cd $boot_dir
+    9) cd $wd
        $bootimg_exynos_dir/repack-exynos-boot.sh kernel initrd/ boot_new.img
        if [[ $? == 0 ]]; then
-           echo "repack is ok!" >> $boot_dir/bootimg.log
+           echo "repack is ok!" >> $wd/bootimg.log
        fi
-       cd $oldwd
-       $sub_menu_dir/menu_bootimgs.sh $boot_dir
+       $script_self $wd $oldwd
        ;;
 
-    b) $TOPDIR/scue_kitchen.sh
+    b) cd $oldwd
+       $TOPDIR/scue_kitchen.sh
        ;;
-    *) $sub_menu_dir/menu_bootimgs.sh $boot_dir
+    *) $script_self $wd $oldwd
        ;;
 esac

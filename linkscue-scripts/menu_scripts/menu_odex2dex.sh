@@ -1,14 +1,23 @@
 #!/bin/bash
 
+#self
+script_self=$(readlink -f $0)
+
 #顶级目录变量
-TOPDIR=$(pwd)
+TOPDIR=${script_self%/linkscue-scripts/menu_scripts/menu_odex2dex.sh}
 scripts_dir=$TOPDIR/linkscue-scripts
 sub_menu_dir=$scripts_dir/menu_scripts
 zipalign=$TOPDIR/linkscue-scripts/zipalign
 
 #脚本自身相关变量
 wd=$1
+oldwd=$(pwd)
 odex2dex=$scripts_dir/odex2dex/odex2dex.sh
+
+#创建目录
+mkdir -p $wd/odex_apk &> /dev/null
+mkdir -p $wd/framework &> /dev/null
+mkdir -p $wd/apk_new &> /dev/null
 
 #初始化
 clear
@@ -22,11 +31,6 @@ echo "
 2. 把手机的/system/framework/全部文件拷贝至工作目录$(basename $wd)/framework/;
 "
 read -p "以下操作完成后，按任意键以继续:"
-
-#创建目录
-mkdir -p $wd/odex_apk &> /dev/null
-mkdir -p $wd/framework &> /dev/null
-mkdir -p $wd/apk_new &> /dev/null
 
 #错误侦测
 while [[ $(ls -1 $wd/framework/) == "" ]]; do
@@ -52,8 +56,10 @@ cat $wd/odexed_apklist.txt | while read line;do
         $odex2dex $line.apk $line.odex
     fi
     cp $(basename $line.apk) ../apk_new/
+    rm -f $(basename $line).apk 
+    rm -f $(basename $line).odex 
 done
-cd $TOPDIR
+cd $oldwd
 
 echo "
 合并操作已完成，输出文件在$(basename $wd)/apk_new/"

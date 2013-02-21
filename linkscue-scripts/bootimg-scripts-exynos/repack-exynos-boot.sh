@@ -1,9 +1,8 @@
 #!/bin/bash
-#
-if [[ $# -lt 2 ]]; then
-    echo "usage: `basename $0` [kernel] [ramdisk_dir] [out_file]"
-    exit 1
-fi
+
+#self
+script_self=$(readlink -f $0)
+dir_self=$(dirname $script_self)
 
 kernel=$1
 rd_dir=$2
@@ -14,8 +13,8 @@ cmdline=$(cat $(ls | grep "\-cmdline"))
 page_size=$(cat $(ls | grep "\-page_size"))
 padding_size=$(cat $(ls | grep "\-padding_size"))
 rdloadaddr=$(cat $(ls | grep "\-rdloadaddr"))
-mkimage=../linkscue-scripts/bootimg-scripts-exynos/mkimage
-mkbootimg=../linkscue-scripts/bootimg-scripts-common/mkbootimg
+mkimage=$dir_self/mkimage
+mkbootimg=$dir_self/mkbootimg
 
 #制作ramdisk
 if [[ ! -d $rd_dir ]]; then

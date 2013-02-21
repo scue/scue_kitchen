@@ -1,7 +1,10 @@
 #!/bin/bash
 
+#self
+script_self=$(readlink -f $0)
+
 #顶级目录变量
-TOPDIR=$(pwd)
+TOPDIR=${script_self%/linkscue-scripts/menu_scripts/menu_sign.sh}
 scripts_dir=$TOPDIR/linkscue-scripts
 sub_menu_dir=$scripts_dir/menu_scripts
 zipalign=$TOPDIR/linkscue-scripts/zipalign

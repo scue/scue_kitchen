@@ -1,13 +1,17 @@
 #!/bin/bash
 
+#self
+script_self=$(readlink -f $0)
+
 #顶级目录
-TOPDIR=$(pwd)
+TOPDIR=${script_self%/linkscue-scripts/menu_scripts/menu_szb.sh}
 scripts_dir=$TOPDIR/linkscue-scripts
 sub_menu_dir=$scripts_dir/menu_scripts
 
 #工作目录
 wd=$1
 szb=$2
+oldwd=$(pwd)
 szbtool_dir=$scripts_dir/lenovo_szbtool
 szbtool=$szbtool_dir/leszb
 unpack_szb=$szbtool_dir/unpackszb.py
@@ -61,6 +65,7 @@ case $opt in
     while [[ "$list_szb" == "" ]]; do
         echo ""
         read -p "请把szb文件放置于$(basename $wd)/目录下:"
+        list_szb="$(ls -1 $wd/*.szb 2> /dev/null | grep "\.szb$" )"
     done
     echo ""
     echo "请选择您要解压的szb文件："
@@ -77,7 +82,7 @@ case $opt in
     echo "$(basename $szb)解压已完成，输出目录是$(basename $wd)/images_output/"
     echo ""
     read -p "请按任意键返回:"
-    $sub_menu_dir/menu_szb.sh $wd $szb
+    $script_self $wd $szb
 ;;
 2)  #解压img选项
     #检查images_output是否为空
@@ -86,7 +91,7 @@ case $opt in
         echo "发现上次解压[ $(basename $szb) ]未输出img文件；"
         echo ""
         read -p "请按任意键返回:"
-    $sub_menu_dir/menu_szb.sh $wd $szb
+    $script_self $wd $szb
     fi
     mkdir -p $tmp
     #获取szb文件名,并指定preload、system存放的目录；
@@ -164,7 +169,7 @@ case $opt in
     echo "解压img文件完毕，如需解压boot.img、recovery.img请使用其他子菜单功能"
     echo ""
     read -p "请按任意键返回:"
-    $sub_menu_dir/menu_szb.sh $wd 
+    $script_self $wd 
 ;;
 3)  #打包img选项
     #目录列表,并备份已打包的旧的img
@@ -221,7 +226,7 @@ case $opt in
     echo "制作img文件已完成，输出文件在 $(basename $wd)/images_repack/"
     echo ""
     read -p "请按任意键返回:"
-    $sub_menu_dir/menu_szb.sh $wd
+    $script_self $wd
 ;;
 4)  #打包为szb文件；
     #创建目录
@@ -262,12 +267,12 @@ case $opt in
     $(cat $repack_cmd)
     mv $szb_name_repack $szb_name_output
     rm -f $repack_cmd
-    cd $TOPDIR
+    cd $oldwd
     echo ""
     echo "szb打包工作已经完成，输出文件在 $wd/szb_repack/$szb_name_output"
     echo ""
     read -p "请按任意键返回:"
-    $sub_menu_dir/menu_szb.sh $wd
+    $script_self $wd
 ;;
 5)  #验证szb的正确性；
     #错误侦测
@@ -285,7 +290,7 @@ case $opt in
     $szbtool -i $szb
     echo ""
     read -p "请按任意键返回:"
-    $sub_menu_dir/menu_szb.sh $wd
+    $script_self $wd
 ;;
 6)  #清除链接文件以打包为zip
     #目录列表
@@ -309,12 +314,12 @@ case $opt in
     fi
     echo ""
     read -p "请按任意键返回:"
-    $sub_menu_dir/menu_szb.sh $wd
+    $script_self $wd
 ;;
 b)
 $TOPDIR/scue_kitchen.sh
 ;;
 *)
-    $sub_menu_dir/menu_szb.sh $wd $szb
+    $script_self $wd $szb
 ;;
 esac

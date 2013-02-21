@@ -1,17 +1,19 @@
 #!/bin/bash
 # Version: 0.1
 # Author: linkscue
-# E-mail: linkscue@gmail.com
-# Put what apks you want to remove to rm_app or delapp dir;
-# Or you can also add a diretory to dir_array, Enjoy!
+
+
+#self
+script_self=$(readlink -f $0)
 
 #dir
-TOPDIR=$(pwd)
+TOPDIR=${script_self%/linkscue-scripts/menu_scripts/menu_rmlib.sh}
 scripts_dir=$TOPDIR/linkscue-scripts
 sub_menu_dir=$scripts_dir/menu_scripts
 zipalign=$TOPDIR/linkscue-scripts/zipalign
 
 wd=$1
+oldwd=$(pwd)
 lib_dir=$wd/lib
 dir_array=(\
  $wd/rm_app\
@@ -67,19 +69,8 @@ else
 fi
 count1=$(cat rm_app_list.txt | wc -l)
 count2=$(cat rm_lib_list.txt | wc -l)
-cd $TOPDIR
+cd $oldwd
 
-#init
-#clear
-#echo "
-#欢迎使用linkscue 清理残余库文件定制厨房工具！"
-#echo "
-#操作说明：
-#
-#1. 把手机/syste/lib/目录上所有的文件复制到$(basename $wd)/lib/目录; 
-#
-#2. 把手机/system/app/目录上，将需要删除的“程序”复制到$(basename $wd)/rm_app/目录；
-#"
 echo "
 本次一共清理 $count1 个程序所涉及的残余库文件共 $count2 个；
 
