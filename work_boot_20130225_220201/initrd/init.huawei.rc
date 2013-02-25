@@ -1,0 +1,597 @@
+# Copyright (C) 2008 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+#########################################################################
+# Modification history
+#
+# Modify history      Author      Date         Reason
+# DTS2012040904141    y00213813   2012/04/09   add btla stack to ics
+# DTS2012041605058    y00213813   2012/04/17   add FM snr parameter
+# DTS2012090406278    z00183953   2012/09/05   updtae bcm-btla from ics to jellybean
+# DTS2012082900380        z00183953      2012/09/20     modify for fix fm
+#########################################################################
+
+
+
+on early-init
+#DTS2012083100452 y00173682 20120831 modify the mount point to follow the J changes begin
+    export EXTERNAL_STORAGE /storage/sdcard0
+    export SECONDARY_STORAGE /storage/sdcard1
+    #DTS2012101100041 z00208524 20121012 add read and exec right of /storage for others begin
+    #DTS2012082900135 y00173682 20120922 add exec right for the system user in /storage begin
+    mkdir /storage 0155 system sdcard_r
+    #DTS2012082900135 y00173682 20120922 add exec right for the system user in /storage end
+    #DTS2012101100041 z00208524 20121012 add read and exec right of /storage for others end
+    mkdir /storage/sdcard0 0000 system system
+    mkdir /storage/sdcard1 0000 system system
+    # for backwards compatibility
+    symlink /storage/sdcard0 /sdcard
+    symlink /storage/sdcard0 /mnt/sdcard
+    symlink /storage/sdcard1 /mnt/sdcard2
+#DTS2012083100452 y00173682 20120831 modify the mount point to follow the J changes end
+#DTS2012080105006 y00173682 begin
+#DTS2011123100675 f00189446 20110113 begin
+# create Ext SDcard mountpoint
+#    export SECONDARY_STORAGE /mnt/ext_sdcard
+#    mkdir /mnt/ext_sdcard 0000 system system
+#DTS2011123100675 f00189446 20110113 end
+#DTS2012080105006 y00173682 end
+on boot
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
+    mkdir /data/peers 0700 root system
+    mount tmpfs tmpfs /data/peers mode=0700,gid=1000
+    chown radio radio /data/peers
+
+    #maoshunli
+    chmod 777 /dev/mtd/mtd1
+
+    #liaojimao
+
+    chmod 777 /dev/HisiGE
+    chmod 777 /dev/graphics/fb0
+    chmod 777 /dev/galcore
+    chmod 777 /dev/graphics/galcore
+
+    #caoyanhua
+	chown system system /sys/class/leds/lcd_backlight0/brightness
+	chmod 664 /sys/class/leds/lcd_backlight0/brightness
+
+	#kf55108
+	chown system system /sys/class/leds/red/delay_on
+	chown system system /sys/class/leds/red/delay_off
+	chown system system /sys/class/leds/green/delay_on
+	chown system system /sys/class/leds/green/delay_off
+	chown system system /sys/class/leds/blue/delay_on
+	chown system system /sys/class/leds/blue/delay_off
+    #synaptics touch
+    chown system system sys/devices/sensor00/fn01/wakeup_threshold
+    chown system system sys/devices/sensor00/fn01/nosleep
+    chown system system sys/devices/sensor00/fn01/allow_doze
+    chown system system sys/devices/sensor00/fn01/reportrate
+    chown system system sys/devices/sensor00/fn01/interrupt_enable
+    chown system system sys/devices/sensor00/fn01/chargerinput
+    chown system system sys/devices/sensor00/fn01/reset
+    chown system system sys/devices/sensor00/fn01/sleepmode
+    chown system system sys/devices/sensor00/fn01/doze_holdoff
+    chown system system sys/devices/sensor00/fn11/flip
+    chown system system sys/devices/sensor00/fn11/clip
+    chown system system sys/devices/sensor00/fn11/rezeroWait
+    chown system system sys/devices/sensor00/fn11/rezeroOnResume
+    chown system system sys/devices/sensor00/fn11/rezero
+    chown system system sys/devices/sensor00/fn11/relreport
+    chown system system sys/devices/sensor00/fn11/swap
+    chown system system sys/devices/sensor00/fn11/offset
+    chown system system sys/devices/sensor00/fn11/abs_pos_filt
+    chown system system sys/devices/sensor00/fn34/status
+    chown system system sys/devices/sensor00/fn34/cmd
+    chown system system sys/devices/sensor00/fn34/rescanPDT
+    chown system system sys/devices/sensor00/fn34/bootloaderid
+    chown system system sys/devices/sensor00/fn34/data
+    chown system system sys/devices/sensor00/fn34/blocknum
+    chown system system sys/devices/sensor00/enabled
+
+    #g00166627
+    mkdir /data/sensor/
+    chmod 777 /data/sensor/
+
+    #j00179721
+    mkdir /data/k3_camera/
+    chmod 777 /data/k3_camera/
+
+    #j64722
+    chmod 777 /dev/hiif_misc
+    chmod 777 /dev/android_usb_enable
+
+    #s00107748
+    chmod 777 /dev/k3_batterymisc
+    #kf29248
+    chmod 777 /dev/spi3_hisipmu
+
+    #add for audio tool
+    chmod 777 /dev/spi3_misc
+    chmod 777 /system/bin/audioRegctl
+    chmod 777 /proc/audioChannel/status
+
+    #add for audio acoustic test
+    chmod 777 /proc/HiAcoustic/control
+    chmod 777 /proc/HiAcoustic/threshold
+    #modify by wuxuecheng
+
+    # add by c126562 start
+    mkdir /data/misc/wifi 0770 wifi wifi
+    chown wifi wifi /data/misc/wifi
+    mkdir /data/misc/wifi/sockets 0770 wifi wifi
+    chown wifi wifi /data/misc/wifi/p2p_supplicant.conf
+    chmod 0660 /data/misc/wifi/p2p_supplicant.conf
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    chown dhcp dhcp /data/misc/dhcp
+    setprop wifi.interface wlan0
+    # add by c126562 end
+
+    setprop ro.audio.analogMIC 1
+    setprop ro.audio.dobuleMIC 1
+    setprop ro.opengles.version 131072
+
+    #add by qizuyong KF23847, 2010-8-17
+    chmod 777 /dev/video0
+    chmod 777 /dev/hx170dec
+    chmod 777 /dev/hx280enc
+    chmod 777 /dev/memalloc
+    chmod 777 /dev/gralloc_pmem
+    chmod 777 /dev/camera_pmem
+    #OverlayCompose:
+    chmod 777 /dev/overlay_pmem
+
+    #seceng driver begin. added by z00212134
+    chmod 777 /dev/k3v2-seceng
+    #seceng driver end. added by z00212134
+
+    #add by ykf63300 for video stablization, 2012-03-27
+    chmod 666 /dev/akm8975_aot
+    chmod 666 /dev/akm8975_dev
+    chmod 664 /dev/input/event0
+    chmod 664 /dev/input/event1
+    chmod 664 /dev/input/event2
+    chmod 664 /dev/input/event3
+    chmod 664 /dev/input/event4
+    chmod 664 /dev/input/event5
+    chmod 664 /dev/input/event6
+    chmod 664 /dev/input/event7
+    chmod 664 /dev/input/event8
+    chmod 664 /dev/input/event9
+    chmod 664 /dev/input/event10
+
+    #add by j00140427 2011-12-15
+    chmod 777 /dev/video19
+
+    #add by zhangyong 00187940 2012-10-19
+    write /proc/sys/net/ipv4/tcp_congestion_control mw3
+
+on boot1
+    #add by c00166660 2011-12-16
+    chmod 777 /dev/audience_es305
+    chmod 777 /dev/tpa2028_l
+    chmod 777 /dev/tpa2028_r
+    chmod 777 /dev/tpa6132
+    chmod 777 /dev/spk_5vboost
+    chmod 777 /dev/boardid_dev
+    chmod 777 /dev/ttyAMA2
+
+    #add by c58721
+    chmod 777 /system/usr/keychars/h2w_headset.kcm.bin
+    chmod 777 /system/usr/keychars/k3_keypad.kcm.bin
+    chmod 777 /system/usr/keychars/qwerty2.kcm.bin
+    chmod 777 /system/usr/keychars/qwerty.kcm.bin
+
+    chmod 777 /dev/rtc0
+
+    #add by d59977
+    chmod 777 /dev/ttyAMA3
+    chmod 777 /data/gps/log
+
+    #add by w00187765
+    mkdir /data/dumplog
+    chmod 777 /data/dumplog
+
+    mkdir /cache/recovery
+    chmod 777 /cache/recovery
+
+    #add by zhangxiaowei zkf26946
+
+    chmod 777 /dev/cpu_maxprofile
+    chmod 777 /dev/cpu_minprofile
+    chmod 777 /dev/cpu_profile_block
+    chmod 777 /dev/cpu_profile_safe
+    chmod 777 /dev/gpu_maxprofile
+    chmod 777 /dev/gpu_minprofile
+    chmod 777 /dev/gpu_profile_block
+    chmod 777 /dev/gpu_profile_safe
+    chmod 777 /dev/ddr_maxprofile
+    chmod 777 /dev/ddr_minprofile
+    chmod 777 /dev/ddr_profile_block
+    chmod 777 /dev/ddr_profile_safe
+    chmod 777 /dev/cpu_number_lock
+    chmod 777 /dev/cpu_number_safe
+    chmod 777 /dev/cpu_number_max
+    chmod 777 /dev/cpu_number_min
+    chmod 777 /dev/ipps_policy
+
+# g00124340 change permissions for bluetooth
+    #chmod 0660 /dev/ttyAMA4
+    chmod 777 /dev/ttyAMA4
+    chown bluetooth bluetooth /dev/ttyAMA4
+
+# g00124340 bluetooth power up/down interface
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+    #chmod 0660 /sys/class/rfkill/rfkill0/state
+    chmod 0774 /sys/class/rfkill/rfkill0/state
+
+# g00124340 bluesleep start/stop interface
+    chown bluetooth bluetooth /proc/bluetooth/sleep/proto
+    chmod 777 /proc/bluetooth/sleep/proto
+
+# zkf55108 2011/11/3 add begin
+    #lis3dhtr
+    chown system system /sys/devices/platform/dw-i2c.0/i2c-0/0-0018/enable
+    chown system system /sys/devices/platform/dw-i2c.0/i2c-0/0-0018/pollrate_ms
+    #adxl346
+    chown system system /sys/devices/platform/dw-i2c.0/i2c-0/0-001c/enable
+    chown system system /sys/devices/platform/dw-i2c.0/i2c-0/0-001c/pollrate_ms
+    #mma8452
+    chown system system /sys/devices/platform/dw-i2c.0/i2c-0/0-0053/enable
+    chown system system /sys/devices/platform/dw-i2c.0/i2c-0/0-0053/pollrate_ms
+    #l3g4200d
+    chown system system /sys/devices/platform/dw-i2c.0/i2c-0/0-0068/enable_device
+    chown system system /sys/devices/platform/dw-i2c.0/i2c-0/0-0068/pollrate_ms
+    chown system system /sys/devices/platform/dw-i2c.0/i2c-0/0-0068/enable_selftest
+    chown system system /sys/devices/platform/dw-i2c.0/i2c-0/0-0068/range
+    #apds990x skf62518
+    chown system system /sys/devices/platform/dw-i2c.0/i2c-0/0-0039/ps_enable
+    chown system system /sys/devices/platform/dw-i2c.0/i2c-0/0-0039/enable_ps_sensor
+    chown system system /sys/devices/platform/dw-i2c.0/i2c-0/0-0039/enable_als_sensor
+    chown system system /sys/devices/platform/dw-i2c.0/i2c-0/0-0039/als_poll_delay
+# zkf55108 2011/11/3 add end
+
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_policy
+
+    chown system system /sys/devices/platform/k3_dev_lcd/cabc_mode
+# z00181527 2012/04/10 add begin
+	chown system system /sys/devices/platform/k3_fb.196609/frc_state
+# z00181527 2012/04/10 add end
+
+# c00182334 2012/04/19 add begin
+        chown system system /sys/devices/platform/k3_fb.196609/sbl_lsensor_state
+# c00182334 2012/04/19 add end
+
+#bq2416x_charger
+     chmod 0660 /sys/bus/i2c/devices/1-006b/enable_charger
+     chown system system /sys/bus/i2c/devices/1-006b/enable_charger
+     chmod 0660 /sys/bus/i2c/devices/1-006b/calling_limit
+     chown system system /sys/bus/i2c/devices/1-006b/calling_limit
+     chmod 0660 /sys/bus/i2c/devices/1-006b/enable_hz_mode
+     chown system system /sys/bus/i2c/devices/1-006b/enable_hz_mode
+     chmod 0660 /sys/bus/i2c/devices/1-0055/state
+     chown system system /sys/bus/i2c/devices/1-0055/state
+
+# kf62518 2012/03/07 begin
+    chown system system /sys/devices/platform/huawei_sensor/acc_input
+    chown system system /sys/devices/platform/huawei_sensor/akm_input
+    chown system system /sys/devices/platform/huawei_sensor/als_input
+    chown system system /sys/devices/platform/huawei_sensor/gyro_input
+    chown system system /sys/devices/platform/huawei_sensor/ps_input
+    chown system system /sys/devices/platform/huawei_sensor/ori_input
+    chown system system /sys/devices/platform/huawei_sensor/acc_info
+    chown system system /sys/devices/platform/huawei_sensor/akm_info
+    chown system system /sys/devices/platform/huawei_sensor/als_info
+    chown system system /sys/devices/platform/huawei_sensor/gyro_info
+    chown system system /sys/devices/platform/huawei_sensor/ps_info
+    chown system system /sys/devices/platform/huawei_sensor/akm_selfTest
+    chown system system /sys/devices/platform/huawei_sensor/gyro_selfTest
+# kf62518 end
+    # we will remap this as /mnt/sdcard with the sdcard fuse tool
+    #DTS2012080105006 y00173682 begin
+    mkdir /data/share 0775 media_rw media_rw
+    chown media_rw media_rw /data/share
+    #DTS2012080105006 y00173682 end
+
+# add by z36904 for cts
+#    chown system system /sys/devices/platform/k3_hdmi.0/edid
+#    chown system system /sys/devices/platform/k3_hdmi.0/code
+#    chown system system /sys/devices/platform/k3_hdmi.0/s3d
+#    chown system system /sys/devices/platform/k3_hdmi.0/dst
+#    chown system system /sys/devices/platform/k3_hdmi.0/hpd
+#    chown system system /sys/devices/platform/k3_hdmi.0/hdcp
+#    chown system system /sys/devices/platform/k3_hdmi.0/deepcolor
+#    chown system system /sys/devices/platform/k3_hdmi.0/reset
+#    chown system system /sys/devices/platform/k3_hdmi.0/reg
+#    chown system system /sys/devices/platform/k3_hdmi.0/connected
+#    chown system system /sys/devices/platform/k3_hdmi.0/s3dsupport
+#    chown system system /sys/devices/platform/k3_hdmi.0/alledid
+#    chown system system /sys/devices/platform/k3_hdmi.0/audiosupport
+#    chown media system /sys/devices/platform/k3_hdmi.0/bufisfree
+
+    chmod 0660 /sys/devices/platform/xmm_power/cp_shutdown
+    chown radio radio /sys/devices/platform/xmm_power/cp_shutdown
+
+# create virtual SD card at /mnt/sdcard, based on the /data/media directory
+#DTS2012080105006 y00173682 begin
+#service sdcard /system/bin/sdcard /data/media 1015 1015
+#       class late_start
+#DTS2012080105006 y00173682 end
+
+#  add by c126562 start
+service wpa_supplicant /system/bin/wpa_supplicant \
+	-iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -e/data/misc/wifi/entropy.bin
+    class main
+    user root
+    socket wpa_wlan0 dgram 660 wifi wifi
+    disabled
+    oneshot
+
+service p2p_supplicant /system/bin/wpa_supplicant \
+	-iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -N \
+	-ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf -e/data/misc/wifi/entropy.bin -puse_p2p_group_interface=1
+    class main
+    user root
+    socket wpa_wlan0 dgram 660 wifi wifi
+    disabled
+    oneshot
+
+service dhcpcd_wlan0 /system/bin/dhcpcd -ABKL
+    class main
+    disabled
+    oneshot
+
+service dhcpcd_p2p /system/bin/dhcpcd -aABKL
+    class main
+    disabled
+    oneshot
+
+service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
+    class main
+    disabled
+    oneshot
+
+service iprenew_wlan0 /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
+service iprenew_p2p /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
+service iprenew_bnep0 /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+#  add by c126562 end
+
+service pppd_gprs1 /system/bin/pppd call gprs1
+   user root
+   group radio cache inet misc
+   disabled
+   oneshot
+
+service pppd_gprs2 /system/bin/pppd call gprs2
+   user root
+   group radio cache inet misc
+   disabled
+   oneshot
+
+service pppd_gprs3 /system/bin/pppd call gprs3
+   user root
+   group radio cache inet misc
+   disabled
+   oneshot
+
+#/*DTS2012052301133 h00187318 2012-5-23 begin*/
+service rillogcat /system/bin/logcat -b radio -v time -r 1024 -n 10 -f /data/android_logs/rillogcat-log
+    class logcat
+    user root
+    group system
+    disabled
+#/*DTS2012052301133 h00187318 2012-5-23 end*/
+
+#/*< DTS2012010604888 l00192645 2012-01-06 begin*/
+service chargelogcat /system/bin/chargelogcat -t 2 -p /data/android_logs/
+    class core
+    user root
+    group system
+    disabled
+#/*DTS2012010604888 l00192645 2012-01-06 end >*/
+
+#/*< taolinbin add for modemlogcat 2012-06-20 begin
+service modemlogcat /system/bin/modemlogcat -r 50 -n 9 -p /mnt/sdcard2/modemlogs/ -t /dev/ttyACM3
+    class core
+    user root
+    group system
+    disabled
+#/taolinbin add for modemlogcat 2012-06-20 end>*
+
+# g00124340 2011-09-19  add bcm4330 fm module begin
+
+#<DTS2012090406278       z00183953      2012/09/05    delete for  updtae bcm-btla from ics to jellybean  begin
+#brcm comment out
+#service btld /system/bin/btld
+#    root bluetooth system
+#    group bluetooth net_bt_admin system
+#    disabled
+#DTS2012090406278       z00183953      2012/09/05    delete for  updtae bcm-btla from ics to jellybean   end>
+
+# g00124340 2011-09-19  add bcm4330 fm module end
+
+# g00124340 2011-09-19  add bcm4330 bluetooth power manager module begin
+service bcm_hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm --scopcm=0,1,0,0,0,0,0,0,0,0 --no2bytes --tosleep 50000 --use_baudrate_for_download --baudrate 3000000 --patchram /etc/bluetooth/BCM4330.hcd /dev/ttyAMA4
+    user root
+    group bluetooth net_bt_admin system
+    disabled
+    oneshot
+
+service hci_dev_up /system/bin/hci_dev_state --dev_up
+    user root
+    group bluetooth system
+    disabled
+    oneshot
+
+service hci_dev_down /system/bin/hci_dev_state --dev_down
+    user root
+    group bluetooth system
+    disabled
+    oneshot
+
+service chip_power_on /system/bin/sh /system/etc/bluetooth/init.bcm.chip_on.sh
+    user root
+    group system
+    disabled
+    oneshot
+
+service chip_power_off /system/bin/sh /system/etc/bluetooth/init.bcm.chip_off.sh
+    user root
+    group system
+    disabled
+    oneshot
+
+# g00124340 2011-09-19  add bcm4330 power manager module end
+
+# g00124340 2011-12-22 add for blueooth bluesleep begin
+service bt_pm_on /system/bin/sh /system/etc/bluetooth/init.bcm.btpm_on.sh
+    user root
+    group system
+    disabled
+    oneshot
+
+service bt_pm_off /system/bin/sh /system/etc/bluetooth/init.bcm.btpm_off.sh
+    user root
+    group system
+    disabled
+    oneshot
+# g00124340 2011-12-22 add for bluetooth bluesleep end
+
+#add by d59977
+service gpsd  /system/bin/glgps -c /system/etc/gpsconfig.xml
+    socket gps seqpacket 777 root root
+    class main
+    user root
+#<DTS2012092804411 j81003738 K3 jellybean broadcom GPS update begin
+    group system
+# DTS2012092804411 j81003738 K3 jellybean broadcom GPS update end >	
+    disabled
+#delete oneshot by z00207811 for gps bug 07/18/2012
+ #   oneshot
+
+on property:ro.runmode=normal
+    start gpsd
+
+# zkf55108 2011/11/10 add begin
+service akm8975 /system/bin/akm8975 -m 3
+    class main
+    user system
+    disabled
+    oneshot
+# zkf55108 2011/11/10 add end
+service akmd8963 /system/bin/akmd8963
+	disabled
+    oneshot
+
+# applogcat is triggered by projectmenu or setprop
+service applogcat /system/bin/logcat -v time -r 1024 -n 8 -f /data/android_logs/applogcat-log
+    disabled
+
+# kmsglogcat is triggered by projectmenu or setprop
+service kmsglogcat /system/bin/kmsgcat -r 1024 -n 8 -f /data/android_logs/kmsgcat-log
+    disabled
+
+#DTS2011122003374 l00192645 2011-12-26 begin
+service sleeplogcat /system/bin/sleeplogcat -t 10 -p /data/android_logs/
+    class core
+    user root
+    group system
+    disabled
+#DTS2011122003374 l00192645 2011-12-26 end
+
+on property:ro.runmode=factory
+    start sleeplogcat
+
+# skf62518 2012/2/9 for ProximitySensor settings begin
+on property:sys.proximitysensor.state=0
+    write /sys/devices/platform/dw-i2c.0/i2c-0/0-0039/ps_enable 0
+on property:sys.proximitysensor.state=1
+    write /sys/devices/platform/dw-i2c.0/i2c-0/0-0039/ps_enable 1
+
+#enable nvmserver log for IMEI write fail problem,just 512KB size
+service nvmlogcat /system/bin/logcat -v time -r 512 -n 1 -f /reserved2/nvmlogcat.log -b radio
+    class main
+    user root
+    group root
+    disabled
+
+#on property:ro.runmode=normal
+#    start nvmlogcat
+
+
+# Add by denghuabin for agps e911 2012/5/15
+service gpsatnewfilter  /system/bin/gpsatnewfilter
+    class main
+    oneshot
+#<DTS2012090406278       z00183953      2012/09/05    add for  updtae bcm-btla from ics to jellybean  begin
+    # dhcp service for pan-nap/pan-u
+service dhcpcd_brcm-pan /system/bin/dhcpcd -ABKL
+	class main
+	disabled
+	oneshot
+
+service iprenew_brcm-pan /system/bin/dhcpcd -n
+	class main
+	disabled
+	oneshot
+#<DTS2012082900380        z00183953      2012/09/20     modify for fix fm  begin
+
+service btld /system/bin/logwrapper /system/bin/btld -lpm 1 -hb 3000000
+    user root
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+#DTS2012082900380        z00183953      2012/09/20     modify for fix fm  end>
+
+# start btld if soft_onoff is enabled
+on property:service.brcm.bt.soft_onoff=1
+    start btld
+
+# stop btld if soft_onoff is disabled
+on property:service.brcm.bt.soft_onoff=0
+    stop btld
+
+#STOPSHIP: Remove logwrapper and -d option before production
+service bluetoothd /system/bin/logwrapper /system/bin/bluetoothd -d -n
+    class main
+    socket bluetooth stream 660 bluetooth bluetooth
+    socket dbus_bluetooth stream 660 bluetooth bluetooth
+    # init.rc does not yet support applying capabilities, so run as root and
+    # let bluetoothd drop uid to bluetooth with the right linux capabilities
+    group bluetooth net_bt_admin misc
+    disabled
+
+#DTS2012090406278       z00183953      2012/09/05    add for  updtae bcm-btla from ics to jellybean   end>
+
+#DTS2012092807279 g00194542 2012/10/24 add root for u9508 QQsecurity begin 
+service athena /system/xbin/athena
+    class main
+    user root
+    group root
+#DTS2012092807279 g00194542 2012/10/24 add root for u9508 QQsecurity end
+

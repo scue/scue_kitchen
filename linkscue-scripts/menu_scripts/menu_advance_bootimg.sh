@@ -53,11 +53,11 @@ case $opt in
 ;;
 3)
     cd $wd
-    $bootimg3 $wd/boot.img
+    $bootimg3 $wd $wd/boot.img
     cd $oldwd
     echo ""
     read -p "按任意键返回菜单:"
-    $TOPDIR/linkscue-scripts/menu_scripts/menu_advance_bootimg.sh $wd
+    $TOPDIR/linkscue-scripts/menu_scripts/menu_advance_bootimg.sh $wd 
 ;;
 4)
     $bootimg_mtk_dir/repack-MT65xx.sh -recovery boot.img-kernel.img boot.img-ramdisk boot_new.img $mkbootimg

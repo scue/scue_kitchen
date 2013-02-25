@@ -1,0 +1,19 @@
+dir / 0755
+file /default.prop initrd/default.prop 0644
+file /ueventd.rc initrd/ueventd.rc 0644
+dir /proc 0755
+file /ueventd.goldfish.rc initrd/ueventd.goldfish.rc 0644
+file /init.usb.rc initrd/init.usb.rc 0750
+file /init.goldfish.rc initrd/init.goldfish.rc 0750
+file /ueventd.huawei.rc initrd/ueventd.huawei.rc 0644
+dir /sys 0755
+dir /data 0771
+file /init initrd/init 0750
+dir /dev 0755
+dir /sbin 0750
+slink /sbin/ueventd ../init 0777
+file /sbin/adbd initrd/sbin/adbd 0750
+file /init.rc initrd/init.rc 0750
+dir /system 0755
+file /init.trace.rc initrd/init.trace.rc 0750
+file /init.huawei.rc initrd/init.huawei.rc 0750
