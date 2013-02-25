@@ -14,34 +14,37 @@ dexopt_file=$dir_self/dexopt-wrapper
 tmp="/data/local/tmp"
 opt="/data/local/tmp/dexopt-wrapper"
 
+#指定设备
+adbs="adb -s $1"
+
 #apk或jar的来源目录
-file_dir=$1
-file_list=$(ls -1 $1/*)
+file_dir=$2
+file_list=$(ls -1 $2/*)
 
 #apk或jar的odex输出目录
-odex_dir=$2
+odex_dir=$3
 
 #获取手机上ROOT权限及tmp目录权限
-adb shell su -c "ls &> /dev/null"
-adb shell su -c "mkdir -p /data/local/tmp 2> /dev/null"
-adb shell su -c "chmod -R 777 /data/local/tmp/ &> /dev/null"
+$adbs shell su -c ls &> /dev/null
+$adbs shell su -c mkdir -p /data/local/tmp 2> /dev/null
+$adbs shell su -c chmod -R 777 /data/local/tmp/ &> /dev/null
 
 #把必备的文件上传到手机
 printf "\n正在上传odex化工具..\n"
-adb push $dexopt_file $opt
-adb shell su -c "chmod 777 $opt"
+$adbs push $dexopt_file $opt
+$adbs shell su -c chmod 777 $opt
 
 #开始逐个进行操作；
 for file in ${file_list[@]}; do
     printf "\n正在处理$file ..\n"
     file_name=$tmp/$(basename $file)
     file_odex=${file_name%.*}.odex
-    adb push $file $file_name &> /dev/null
-    adb shell su -c "$opt $file_name $file_odex" &> /dev/null
-    adb pull $file_odex $odex_dir/ &> /dev/null
-    adb shell su -c "rm $file_name"
-    adb shell su -c "rm $file_odex"
+    $adbs push $file $file_name &> /dev/null
+    $adbs shell su -c $opt $file_name $file_odex &> /dev/null
+    $adbs pull $file_odex $odex_dir/ &> /dev/null
+    $adbs shell su -c rm $file_name
+    $adbs shell su -c rm $file_odex
 done
 
 #删除odex化工具
-adb shell su -c "rm $opt"
+$adbs shell su -c rm $opt

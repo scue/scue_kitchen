@@ -142,10 +142,10 @@ case $opt in
         fi
     fi
 
-    #检测是否连接着有手机,或是有多台手机；
-    while [[ $(adb devices | sed '/List of devices attached/d;/^$/d' | wc -l) != "1" ]]; do
+    #检测是否连接着有手机
+    while [[ "$(adb devices | sed -n "$(($(adb devices | sed -n '/List of devices attached/=')+1)) p")" == "" ]]; do
         echo ""
-        read -p "警告：未连接有设备，或是有多台设备同时连接着，请尝试只连接一台设备: "
+        read -p "警告：未连接有设备，请尝试只连接一台设备: "
     done
 
     #检测是否能正常连接上手机
@@ -161,12 +161,22 @@ case $opt in
         fi
     fi
 
+    #请选择将要操作的设备
+    devices=$(adb devices | grep -w device | awk '{print $1}')
+    echo ""
+    echo "请选择将要操作的设备:"
+    select device in $devices;do
+        echo ""
+        echo "您选择的设备是: $device"
+        break
+    done
+
     #检测操作目录是否为空
     while [[ "$(ls -1 $wd/unodex_file/*)" == "" ]]; do
         echo ""
         read -p "请把将要分离出odex文件的apk文件放置于 $wd/unodex_file:"
     done
-    $dex2odex $wd/unodex_file $wd/odexed_odex # &> /dev/null
+    $dex2odex $device $wd/unodex_file $wd/odexed_odex # &> /dev/null
     echo ""
     echo ">> odex化操作已经完成，输出的odex文件在$wd/odexed_odex/"
 
