@@ -12,7 +12,7 @@ $bootimg --unpack-bootimg $img 2> $tmp
 
 array=( base cmdline page_size padding_size )
 for param in ${array[@]}; do
-    cat $tmp | grep $param | awk -F'=' '{print $2}' > $img-$param
+    cat $tmp | grep $param | sed "s/^${param}=//" > $img-$param
 done
 
 $bootimg --unpack-ramdisk ramdisk.gz

@@ -27,6 +27,7 @@ cd $wd
 tmp=tmp_$$.txt
 
 #剪切前边0x800大小的信息
+rm -rf initrd/ &> /dev/null
 dd if=$boot of=${boot}_nohead bs=$((0x800)) skip=1
 $bootimg --unpack-bootimg ${boot}_nohead 2> $tmp
 $bootimg --unpack-ramdisk ramdisk.gz
@@ -35,7 +36,7 @@ rm -f ${boot}_nohead
 #把boot.img解压信息写入指定位置
 array=( base cmdline page_size padding_size )
 for param in ${array[@]}; do
-    cat $tmp | grep $param | awk -F'=' '{print $2}' > $boot-$param
+    cat $tmp | grep $param | sed "s/^${param}=//" > $boot-$param
 done
 rm -f $tmp
 
