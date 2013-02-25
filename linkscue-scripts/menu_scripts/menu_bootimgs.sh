@@ -24,6 +24,7 @@ echo "
  8) 打包boot.img（MTK平台）；
  9) 打包boot.img（三星平台）；
 
+ 0) 高级菜单；
  b) 返回主菜单；
 "
 
@@ -137,7 +138,9 @@ case $opt in
        fi
        $script_self $wd $oldwd
        ;;
-
+    0) rm -f $wd/bootimg.log
+       $sub_menu_dir/menu_advance_bootimg.sh $wd 
+       ;;
     b) cd $oldwd
        $TOPDIR/scue_kitchen.sh
        ;;
