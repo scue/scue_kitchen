@@ -4,7 +4,7 @@
 script_self=$(readlink -f $0)
 
 #顶级目录
-TOPDIR=${script_self%/linkscue-scripts/menu_scripts/menu_szb.sh}
+TOPDIR=${script_self%/linkscue-scripts/menu_scripts/menu_szb.sh} 
 scripts_dir=$TOPDIR/linkscue-scripts
 sub_menu_dir=$scripts_dir/menu_scripts
 
@@ -13,8 +13,7 @@ wd=$1
 szb=$2
 oldwd=$(pwd)
 szbtool_dir=$scripts_dir/lenovo_szbtool
-szbtool=$szbtool_dir/leszb
-unpack_szb=$szbtool_dir/unpackszb.py
+szbtool=$szbtool_dir/szbtool_x86                # 不再使用leszb
 repack_szb=$szbtool_dir/repack_szb.sh
 unpack_img=$szbtool_dir/unpack_img.sh
 repack_img=$szbtool_dir/repack_img.sh
@@ -25,7 +24,7 @@ simg2img=$scripts_dir/make_ext4fs_ics/simg2img
 #初始化
 clear
 echo ""
-echo "欢迎使用linkscue szb定制厨房工具(感谢木马男孩szb工具)！"
+echo "欢迎使用linkscue szb定制厨房工具(感谢木马男孩校验码的算法)！"
 echo ""
 echo "使用说明："
 echo ""
@@ -77,7 +76,11 @@ case $opt in
     #解压前清除原来的img文件
     rm -rf $wd/images_output/*.img
     #执行解压操作
-    $unpack_szb $szb $wd/images_output/
+    mv $szb $wd/images_output/
+    cd $wd/images_output
+    $szbtool -x $(basename $szb)                # 这里更新了下解压方法；
+    mv $(basename $szb) $wd/
+    cd $oldwd
     echo ""
     echo "$(basename $szb)解压已完成，输出目录是$(basename $wd)/images_output/"
     echo ""
@@ -254,13 +257,13 @@ case $opt in
             system.img)     echo -n " -s system.img" >> $repack_cmd ;;
             cpimage.img)    echo -n " -c cpimage.img" >> $repack_cmd ;;
             preload.img)    echo -n " -p preload.img" >> $repack_cmd ;;
-            recovery.img)   echo -n " -y recovery.img" >> $repack_cmd ;;
+            recovery.img)   echo -n " -r recovery.img" >> $repack_cmd ;;
         esac
     done
     read -p "请输入szb固件名称[不要有空格]: " szb_name
     szb_name_repack="${szb_name%.szb}"
     szb_name_output=${szb_name_repack}.szb
-    echo -n " -v $szb_name_repack" >> $repack_cmd
+    echo -n " -e -v $szb_name_repack" >> $repack_cmd # 添加“双清”功能，避免数据不兼容导致众多的bug
     echo ""
     echo "正在打包为szb文件，其中打包过程可能会比较长 .."
     cd $wd/szb_repack/
