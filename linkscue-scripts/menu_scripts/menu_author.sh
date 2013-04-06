@@ -5,7 +5,7 @@ clear
 echo ""
 echo "欢迎使用linkscue ROM定制厨房工具！"
 echo "
-版本：0.3 beta1
+版本：0.4
 作者：linkscue@gmail.com
 声明：本程序开源开放，任何人可以复制、修改并重新发布，但请保留原作者信息；
 
