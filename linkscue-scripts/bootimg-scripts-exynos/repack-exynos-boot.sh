@@ -15,6 +15,7 @@ padding_size=$(cat $(ls | grep "\-padding_size"))
 rdloadaddr=$(cat $(ls | grep "\-rdloadaddr"))
 mkimage=$dir_self/mkimage
 mkbootimg=$dir_self/mkbootimg
+bootimg=$dir_self/bootimg.py
 
 #制作ramdisk
 if [[ ! -d $rd_dir ]]; then
@@ -27,5 +28,9 @@ cd ../
 $mkimage -A arm -O linux -T ramdisk -C none -a $rdloadaddr -n "ramdisk" -d ramdisk_$$.gz ramdisk.cpio.gz
 
 #制作boot.img
-$mkbootimg --kernel $kernel --ramdisk ramdisk.cpio.gz --base $base --cmdline \'$cmdline\' --pagesize $page_size -o $outfile
+if [[ "$cmdline" == "" ]]; then
+    $mkbootimg --kernel $kernel --ramdisk ramdisk.cpio.gz --base $base --cmdline '' --pagesize $page_size -o $outfile
+else    
+    $mkbootimg --kernel $kernel --ramdisk ramdisk.cpio.gz --base $base --cmdline "$cmdline" --pagesize $page_size -o $outfile
+fi
 echo "I: the output file is $outfile"

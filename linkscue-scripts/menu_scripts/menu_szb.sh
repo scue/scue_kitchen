@@ -76,6 +76,7 @@ case $opt in
     #解压前清除原来的img文件
     rm -rf $wd/images_output/*.img
     #执行解压操作
+    mkdir $wd/images_output 2> /dev/null
     mv $szb $wd/images_output/
     cd $wd/images_output
     $szbtool -x $(basename $szb)                # 这里更新了下解压方法；
@@ -133,43 +134,54 @@ case $opt in
     echo "此子菜单暂时只支持解压preload与system两分区，且提取img分区需root权限；"
     echo ""
     sudo ls > /dev/null
-    echo ""
-    echo "正在解压preload分区"   
-    if [[ "$detect_p" == "data" ]]; then
-        echo -n "正解压缩："
-        $simg2img $preload $preload_out
+    if [[ -f $preload ]]; then                  # unpack prelaod.img
+        echo ""
+        echo "<<< 正在解压preload分区"   
+        if [[ "$detect_p" == "data" ]]; then
+            echo -n ">>> 正解压缩："
+            $simg2img $preload $preload_out
+        else
+            mv $preload $preload_out
+        fi
+        sudo mount $preload_out $tmp 2> /dev/null
+        sudo chown -R $USER $tmp
+        sudo chmod -R 775 $tmp
+        echo "<<< 正在拷贝preload分区文件至 $(basename $wd)/$(basename $preload_dir) .."
+        rm -rf ${preload_dir}_bak 2> /dev/null
+        mv -f $preload_dir ${preload_dir}_bak 2> /dev/null
+        cp -af $tmp $preload_dir
+        sudo umount $tmp 2> /dev/null
+        echo ">>> 解压prelaod.img完毕"
     else
-        mv $preload $preload_out
+        echo ">>> $szb中没有prelaod.img"
     fi
-    sudo mount $preload_out $tmp 2> /dev/null
-    sudo chown -R $USER $tmp
-    sudo chmod -R 775 $tmp
-    echo "正在拷贝preload分区文件至 $(basename $wd)/$(basename $preload_dir) .."
-    rm -rf ${preload_dir}_bak 2> /dev/null
-    mv -f $preload_dir ${preload_dir}_bak 2> /dev/null
-    cp -af $tmp $preload_dir
-    sudo umount $tmp 2> /dev/null
-    echo ""
-    echo "正在解压system分区"   
-    if [[ "$detect_p" == "data" ]]; then
-        echo -n "正解压缩："
-        $simg2img $system $system_out
+    if [[ -f $system ]]; then                   # unpack system.img
+        echo ""
+        echo "<<< 正在解压system分区"   
+        if [[ "$detect_s" == "data" ]]; then
+            echo -n ">>> 正解压缩："
+            $simg2img $system $system_out
+        else
+            mv $system $system_out
+        fi
+        sudo mount $system_out $tmp 2> /dev/null
+        sudo chown -R $USER $tmp
+        sudo chmod -R 775 $tmp
+        echo "<<< 正在拷贝system分区文件至 $(basename $wd)/$(basename $system_dir) .."
+        rm -rf ${system_dir}_bak 2> /dev/null
+        mv -f $system_dir ${system_dir}_bak 2> /dev/null
+        cp -af $tmp $system_dir
+        sudo umount $tmp 2> /dev/null
+        echo ">>> 解压system.img完毕"
+
     else
-        mv $system $system_out
+        echo ">>> $szb中没有system.img"
     fi
-    sudo mount $system_out $tmp 2> /dev/null
-    sudo chown -R $USER $tmp
-    sudo chmod -R 775 $tmp
-    echo "正在拷贝system分区文件至 $(basename $wd)/$(basename $system_dir) .."
-    rm -rf ${system_dir}_bak 2> /dev/null
-    mv -f $system_dir ${system_dir}_bak 2> /dev/null
-    cp -af $tmp $system_dir
-    sudo umount $tmp 2> /dev/null
-    rm -rf $tmp
-    mv $preload_out $preload
-    mv $system_out $system
+    rm -rf $tmp                                 # remove the tmp directory
+    mv $preload_out $preload 2> /dev/null
+    mv $system_out $system 2> /dev/null
     echo ""
-    echo "解压img文件完毕，如需解压boot.img、recovery.img请使用其他子菜单功能"
+    echo ">>> 解压img文件完毕，如需解压boot.img、recovery.img请使用其他子菜单功能"
     echo ""
     read -p "请按任意键返回:"
     $script_self $wd 

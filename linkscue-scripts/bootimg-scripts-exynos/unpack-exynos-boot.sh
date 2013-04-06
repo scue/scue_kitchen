@@ -20,8 +20,7 @@ $bootimg --unpack-bootimg $img 2> $tmp
 echo "2) write output param"
 array=( base cmdline page_size padding_size )
 for param in ${array[@]}; do
-    #statements
-    cat $tmp | grep $param | awk -F'=' '{print $2}' > $img-$param
+    cat $tmp | grep $param | awk -F'=' '{print $2}' | sed 's/"//g' > $img-$param # 双引号"不应该被获取
 done
 
 echo "3) skip 64 bytes of the ramdisk head, and get load address"

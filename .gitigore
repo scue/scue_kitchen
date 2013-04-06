@@ -1,10 +1,10 @@
 #cache
 *~
 *.swp
-.fuse_hidden*
+*.fuse_hidden*
 
 #tmp dir
 tmp/
 
 #work dir
-work_*
+work*
