@@ -11,8 +11,7 @@ zipalign=$TOPDIR/linkscue-scripts/zipalign
 
 wd=$1
 oldwd=$(pwd)
-unpack1=$scripts_dir/huawei_unpack_official_rom/unpack_1.py
-unpack2=$scripts_dir/huawei_unpack_official_rom/unpack_2.py
+unpackhwapp=$scripts_dir/huawei_unpack_official_rom/unpackhwapp_x86
 #init
 clear
 echo "
@@ -28,18 +27,8 @@ cd $wd
 echo "
 I:正在进行解压(内存不够将会比较卡)..
 "
-echo "I:执行精确解压.."
-$unpack1 UPDATE.APP &> /dev/null
-if [[ -f $wd/INPUT.img ]]; then
-    printf "\nI:精确解压失败，转为普通解压..\n"
-    rm -f $wd/INPUT.img &> /dev/null
-    $unpack2 UPDATE.APP
-    for (( i = 1; i < 10; i++ )); do
-        mv out_$i.img out_0$i.img
-    done
-else
-    printf "\nI:精确解压成功!\n"
-fi
+echo "I:正在执行解压.."
+$unpackhwapp UPDATE.APP
 mkdir -p $wd/output &> /dev/null
 mv -f $wd/*.img $wd/output/
 cd $oldwd
