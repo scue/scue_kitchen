@@ -1,4 +1,4 @@
-厨房版本：0.4
+厨房版本：0.5 beta1
 厨房作者：linkscue@gmail.com
 权利声明：本程序开源开放，任何人可以复制修改，并重新发布，但需保留原作者信息；
 项目地址：git@github.com:scue/scue_kitchen.git
@@ -15,6 +15,7 @@
 9. 签名工具，支持签名系统应用程序；
 
 环境要求：
+!. 不能在Cygwin中操作!
 1. 64位要安装32位运行组件：在终端上输入 "sudo apt-get install ia32-libs"
 2. 64位自动配置java环境(Linux_java_env.zip)：http://pan.baidu.com/share/link?shareid=322603&uk=1175777033
 
@@ -25,6 +26,15 @@
 
 
 更新历史：
+>> 0.5 beta1
+1. 主菜单中添加“99) 直接制作成zip卡刷包；”
+注:可以制作完成后，可以自行添加boot.img recovery.img至zip卡刷包中(无须修改升级脚本)
+
+>> 0.4 稳定发行版
+1. 重写支持部分华为机型的UPDATE.app精确解压
+2. 重写联想手机固件的szb制作工具szbtool
+3. 优化三星平台boot.img的解压与打包
+
 >> 0.3 beta2
 1. 分离odex时，支持选择设备（方便多台设备连接时的操作）
 2. 在厨房界面的boot.img菜单上添加高级菜单，支持荣耀2海思平台boot.img解压，及增强版解压boot.img工具；
