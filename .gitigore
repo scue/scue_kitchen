@@ -4,7 +4,7 @@
 *.fuse_hidden*
 
 #tmp dir
-tmp/
+tmp
 
 #work dir
 work*
