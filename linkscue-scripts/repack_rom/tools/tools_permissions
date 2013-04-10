@@ -1,0 +1,9 @@
+su
+chmod 755 /data/local/tmp/busybox
+chmod 755 /data/local/tmp/zip
+chmod 755 /data/local/tmp/backup_rom.sh
+chmod 755 /data/local/tmp/mount_data.sh
+chmod 755 /data/local/tmp/restore_rom.sh
+chmod -R 766 /data/local/tmp/META-INF
+exit
+exit

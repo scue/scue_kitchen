@@ -33,6 +33,7 @@ echo "
  8) 联想特殊szb格式；
  9) 签名工具；
 
+99) 直接制作成zip卡刷包；
  0) 作者及版本信息;
  x) 退出；
 "
@@ -194,6 +195,8 @@ case $opt in
            $sub_menu_dir/menu_sign.sh $work_sign_dir
        fi
        ;;
+     99) $sub_menu_dir/menu_repack_rom.sh
+     ;;
      0) $sub_menu_dir/menu_author.sh
      ;;
      x) clear;

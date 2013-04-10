@@ -1,0 +1,9 @@
+su
+rm  /data/local/tmp/busybox
+rm  /data/local/tmp/zip
+rm  /data/local/tmp/backup_rom.sh
+rm  /data/local/tmp/mount_data.sh
+rm  /data/local/tmp/restore_rom.sh
+rm  -r /data/local/tmp/META-INF
+exit
+exit
