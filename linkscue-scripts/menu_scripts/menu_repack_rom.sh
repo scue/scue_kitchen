@@ -22,6 +22,7 @@ script_self=$(readlink -f $0)
 #顶级目录变量
 TOPDIR=${script_self%/linkscue-scripts/menu_scripts/menu_repack_rom.sh}
 scripts_dir=$TOPDIR/linkscue-scripts
+usb_rule=$scripts_dir/odexopt/51-android.rules
 
 clear
 echo ""
